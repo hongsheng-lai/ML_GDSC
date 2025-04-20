@@ -1,0 +1,46 @@
+general:
+  # Usage mode: "train" to train and then evaluate on test, "eval" to only evaluate, or "feat_extract" for feature extraction.
+  usage: "train"
+  gpu_id: 0
+  seed: 1
+  save_num: 0
+  # Path to save training logs (if used by your logger)
+  save_path_log: "logs/training.log"
+
+data:
+  # Path to the JSON file containing your pre-padded embeddings, masks, and labels.
+  json_path: ""
+  # Split ratios for training and validation; the remaining percentage is used for testing.
+  train_split: 0.6
+  val_split: 0.2
+
+model:
+  # Choose the model type based on the baseline method.
+  # For example, use "onehot" to select OnehotMaskedMLP, or "positional" to choose another variant.
+  model_choice: "MLP"
+  baseline: True
+  # Path to save the best model checkpoint.
+  model_save_path: "results/model/${model.model_choice}_model.ckpt"
+  # Model hyperparameters.
+  num_features: 336 #  onehot:86016 positional:960 esm2_35:960 esm2_650:2560
+  hidden: 256
+  dropout: 0
+  label_num: 1
+  batch_size: 1000
+
+train:
+  learning_rate: 0.0001
+  num_epochs: 2000
+  early_stop_patience: 20
+
+wandb:
+  project: CMU_ML
+  run_id: null
+  run_name: ${model.model_choice}_bs${model.batch_size}_${general.save_num}
+
+hydra:
+  run:
+    dir: "."
+  job_logging:
+    root:
+      handlers: null
